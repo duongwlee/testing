@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1>dcmmwtf</h1>
     <HelloWorld/>
   </div>
 </template>
