@@ -1,58 +1,47 @@
+<!-- Below code is tested on SheetJS v0.14.0 -->
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <button type="button" v-on:click="onexport">Excel download</button>
 </template>
 
 <script>
+import XLSX from 'xlsx'
+
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+  data: () => ({
+    Datas: {
+      // We will make a Workbook contains 2 Worksheets
+      'animals': [
+                  {"name": "cat", "category": "animal"}
+                  ,{"name": "dog", "category": "animal"}
+                  ,{"name": "pig", "category": "animal"}
+                ],
+      'pokemons': [
+                  {"name": "pikachu", "category": "pokemon"}
+                  ,{"name": "Arbok", "category": "pokemon"}
+                  ,{"name": "Eevee", "category": "pokemon"}
+                ]
+    },
+    data: {},
+  }),
+  methods: {
+    onexport () { // On Click Excel download button
+    
+      // export json to Worksheet of Excel
+      // only array possible
+      var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals) 
+      var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
+
+      // A workbook is the name given to an Excel file
+      var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+      // add Worksheet to Workbook
+      // Workbook contains one or more worksheets
+      XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+      XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
+
+      // export Excel file
+      XLSX.writeFile(wb, 'book.xlsx') // name of the file is 'book.xlsx'
+    },
+}
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
